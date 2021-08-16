@@ -1219,6 +1219,7 @@ async function run() {
     const headTokenRegex = new RegExp('%headbranch%', "g");
 
     const inputs = {
+      context: core.getInput('pr-context', {required: false}),
       token: core.getInput('repo-token', {required: true}),
       baseBranchRegex: core.getInput('base-branch-regex'),
       headBranchRegex: core.getInput('head-branch-regex'),
@@ -1235,6 +1236,7 @@ async function run() {
       bodyUppercaseHeadMatch: (core.getInput('body-uppercase-head-match').toLowerCase() === 'true'),
     }
 
+    const prContext = inputs.context ? github.context.payload.pull_request : inputs.context;
     const baseBranchRegex = inputs.baseBranchRegex.trim();
     const matchBaseBranch = baseBranchRegex.length > 0;
 
@@ -1252,7 +1254,7 @@ async function run() {
     }
 
     if (matchBaseBranch) {
-      const baseBranchName = github.context.payload.pull_request.base.ref;
+      const baseBranchName = prContext.base.ref;
       const baseBranch = inputs.lowercaseBranch ? baseBranchName.toLowerCase() : baseBranchName;
       core.info(`Base branch: ${baseBranch}`);
 
@@ -1269,7 +1271,7 @@ async function run() {
     }
 
     if (matchHeadBranch) {
-      const headBranchName = github.context.payload.pull_request.head.ref;
+      const headBranchName = prContext.head.ref;
       const headBranch = inputs.lowercaseBranch ? headBranchName.toLowerCase() : headBranchName;
       core.info(`Head branch: ${headBranch}`);
 
@@ -1288,12 +1290,12 @@ async function run() {
     const request = {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
-      pull_number: github.context.payload.pull_request.number,
+      pull_number: prContext.number,
     }
 
     const upperCase = (upperCase, text) => upperCase ? text.toUpperCase() : text;
 
-    const title = github.context.payload.pull_request.title || '';
+    const title = prContext.title || '';
     const processedTitleText = inputs.titleTemplate
       .replace(baseTokenRegex, upperCase(inputs.titleUppercaseBaseMatch, matches.baseMatch))
       .replace(headTokenRegex, upperCase(inputs.titleUppercaseHeadMatch, matches.headMatch));
@@ -1318,7 +1320,7 @@ async function run() {
       core.warning('No updates were made to PR title');
     }
 
-    const body = github.context.payload.pull_request.body || '';
+    const body = prContext.body || '';
     const processedBodyText = inputs.bodyTemplate
       .replace(baseTokenRegex, upperCase(inputs.bodyUppercaseBaseMatch, matches.baseMatch))
       .replace(headTokenRegex, upperCase(inputs.bodyUppercaseHeadMatch, matches.headMatch));
