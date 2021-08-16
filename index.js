@@ -25,7 +25,7 @@ async function run() {
     }
     
     console.log("input context:", inputs.context);
-    if (inputs.context == "") {
+    if (inputs.context != "") {
       const prContext = inputs.context;
       console.log("pr context base ref:",  prContext.base.ref);  
     }
