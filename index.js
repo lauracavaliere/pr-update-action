@@ -27,13 +27,13 @@ async function run() {
     console.log("input context:", inputs.context);
     if (inputs.context == "") {
       const prContext = inputs.context;
+      console.log("pr context base ref:",  prContext.base.ref);  
     }
     else {
       const prContext = github.context.payload.pull_request;
+      console.log("pr context head ref:",  prContext.head.ref);
     }
     console.log("pr context:", prContext);
-    console.log("pr context base ref:",  prContext.base.ref);  
-    console.log("pr context head ref:",  prContext.head.ref);
 
     const baseBranchRegex = inputs.baseBranchRegex.trim();
     const matchBaseBranch = baseBranchRegex.length > 0;
