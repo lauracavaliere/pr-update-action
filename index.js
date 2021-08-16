@@ -24,16 +24,7 @@ async function run() {
       bodyUppercaseHeadMatch: (core.getInput('body-uppercase-head-match').toLowerCase() === 'true'),
     }
     
-    console.log("input context:", inputs.context);
-    if (inputs.context != "") {
-      const prContext = JSON.parse(inputs.context);
-      console.log("pr context base ref:",  prContext.base.ref);  
-    }
-    else {
-      const prContext = github.context.payload.pull_request;
-      console.log("pr context head ref:",  prContext.head.ref);
-    }
-    console.log("pr context:", prContext);
+    const prContext = (inputs.context != "") ? JSON.parse(inputs.context) : github.context.payload.pull_request;
 
     const baseBranchRegex = inputs.baseBranchRegex.trim();
     const matchBaseBranch = baseBranchRegex.length > 0;
