@@ -5,6 +5,9 @@ runs:
   using: "node12"
   main: "dist/index.js"
 inputs:
+  pr-context:
+    description: "The pr context of the action"
+    required: false
   repo-token:
     description: "The GITHUB_TOKEN secret"
     required: true
