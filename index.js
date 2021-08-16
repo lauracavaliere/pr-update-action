@@ -23,8 +23,13 @@ async function run() {
       bodyUppercaseBaseMatch: (core.getInput('body-uppercase-base-match').toLowerCase() === 'true'),
       bodyUppercaseHeadMatch: (core.getInput('body-uppercase-head-match').toLowerCase() === 'true'),
     }
-
-    const prContext = inputs.context ? github.context.payload.pull_request : inputs.context;
+    
+    if (inputs.context == "") {
+      const prContext = inputs.context;
+    }
+    else {
+      const prContext = github.context.payload.pull_request;
+    }
     
     const baseBranchRegex = inputs.baseBranchRegex.trim();
     const matchBaseBranch = baseBranchRegex.length > 0;
